@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Home, Plus, List, BarChart3 } from 'lucide-react';
-import NavBar from './components/NavBar';
+import { Plus } from 'lucide-react';
 import HeroCover from './components/HeroCover';
 import TradeForm from './components/TradeForm';
 import TradeTable from './components/TradeTable';
+import Sidebar from './components/Sidebar';
 
 function useLocalStorage(key, initialValue) {
   const [value, setValue] = useState(() => {
@@ -22,17 +22,10 @@ function useLocalStorage(key, initialValue) {
   return [value, setValue];
 }
 
-const icons = {
-  dashboard: Home,
-  new: Plus,
-  history: List,
-  analytics: BarChart3,
-};
-
 function computeMultiplier(pair = '') {
   const p = pair.toUpperCase();
   if (p.includes('JPY')) return 100;
-  if (p.includes('XAU') || p.includes('GOLD')) return 1; // simple assumption
+  if (p.includes('XAU') || p.includes('GOLD')) return 1;
   return 10000;
 }
 
@@ -83,7 +76,7 @@ function MiniEquityChart({ data }) {
   const padding = 24;
   if (!data.length) {
     return (
-      <div className="h-40 w-full rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-white/60">
+      <div className="h-40 w-full rounded-xl border border-white/10 bg-white/5 flex items-center justify-center text-slate-500">
         No equity data yet
       </div>
     );
@@ -148,108 +141,106 @@ export default function App() {
     setTrades((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const navItems = [
-    { key: 'dashboard', label: 'Dashboard', icon: icons.dashboard },
-    { key: 'new', label: 'Add Trade', icon: icons.new },
-    { key: 'history', label: 'History', icon: icons.history },
-    { key: 'analytics', label: 'Analytics', icon: icons.analytics },
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-white/40 text-slate-900">
-      <NavBar items={navItems} activeKey={page} onChange={setPage} />
+      <div className="flex">
+        <Sidebar activeKey={page} onChange={setPage} />
+        <main className="flex-1 min-h-screen ml-0 lg:ml-0 px-6 pb-12 lg:pl-72">
+          {page === 'dashboard' && (
+            <>
+              <div className="pt-6 lg:pt-8">
+                <HeroCover />
+              </div>
+              <section className="mx-auto max-w-6xl -mt-24 relative z-10">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
+                    <div className="text-xs uppercase tracking-wide text-slate-500">Total Trades</div>
+                    <div className="text-3xl font-semibold mt-1">{analytics.total}</div>
+                  </div>
+                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
+                    <div className="text-xs uppercase tracking-wide text-slate-500">Win Rate</div>
+                    <div className="text-3xl font-semibold mt-1">{analytics.winRate}%</div>
+                  </div>
+                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
+                    <div className="text-xs uppercase tracking-wide text-slate-500">Net PnL</div>
+                    <div className={`text-3xl font-semibold mt-1 ${analytics.totalPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>{formatCurrency(analytics.totalPnl)}</div>
+                  </div>
+                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
+                    <div className="text-xs uppercase tracking-wide text-slate-500">Avg R Multiple</div>
+                    <div className="text-3xl font-semibold mt-1">{analytics.avgR.toFixed(2)}</div>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <MiniEquityChart data={analytics.equity} />
+                </div>
+                <div className="mt-8">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold">Recent Trades</h3>
+                    <button onClick={() => setPage('history')} className="text-sm text-slate-600 hover:text-slate-900">View all</button>
+                  </div>
+                  <TradeTable trades={trades.slice(0, 5)} onDelete={removeTrade} compact />
+                </div>
+              </section>
+            </>
+          )}
 
-      {page === 'dashboard' && (
-        <>
-          <HeroCover />
-          <section className="mx-auto max-w-6xl px-6 -mt-24 relative z-10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
-                <div className="text-xs uppercase tracking-wide text-slate-500">Total Trades</div>
-                <div className="text-3xl font-semibold mt-1">{analytics.total}</div>
-              </div>
-              <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
-                <div className="text-xs uppercase tracking-wide text-slate-500">Win Rate</div>
-                <div className="text-3xl font-semibold mt-1">{analytics.winRate}%</div>
-              </div>
-              <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
-                <div className="text-xs uppercase tracking-wide text-slate-500">Net PnL</div>
-                <div className={`text-3xl font-semibold mt-1 ${analytics.totalPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>{formatCurrency(analytics.totalPnl)}</div>
-              </div>
-              <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
-                <div className="text-xs uppercase tracking-wide text-slate-500">Avg R Multiple</div>
-                <div className="text-3xl font-semibold mt-1">{analytics.avgR.toFixed(2)}</div>
-              </div>
-            </div>
-            <div className="mt-6">
-              <MiniEquityChart data={analytics.equity} />
-            </div>
-            <div className="mt-8">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-semibold">Recent Trades</h3>
-                <button onClick={() => setPage('history')} className="text-sm text-slate-600 hover:text-slate-900">View all</button>
-              </div>
-              <TradeTable trades={trades.slice(0, 5)} onDelete={removeTrade} compact />
-            </div>
-          </section>
-        </>
-      )}
+          {page === 'new' && (
+            <section className="mx-auto max-w-3xl py-10">
+              <h2 className="text-2xl font-semibold mb-4">Add New Trade</h2>
+              <TradeForm onSubmit={handleAddTrade} />
+            </section>
+          )}
 
-      {page === 'new' && (
-        <section className="mx-auto max-w-3xl px-6 py-10">
-          <h2 className="text-2xl font-semibold mb-4">Add New Trade</h2>
-          <TradeForm onSubmit={handleAddTrade} />
-        </section>
-      )}
+          {page === 'history' && (
+            <section className="mx-auto max-w-6xl py-10">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-semibold">Trade History</h2>
+                <button onClick={() => setPage('new')} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 text-white px-4 py-2 hover:bg-slate-800">
+                  <Plus size={16} /> New Trade
+                </button>
+              </div>
+              <TradeTable trades={trades} onDelete={removeTrade} />
+            </section>
+          )}
 
-      {page === 'history' && (
-        <section className="mx-auto max-w-6xl px-6 py-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-semibold">Trade History</h2>
-            <button onClick={() => setPage('new')} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 text-white px-4 py-2 hover:bg-slate-800">
-              <Plus size={16} /> New Trade
-            </button>
-          </div>
-          <TradeTable trades={trades} onDelete={removeTrade} />
-        </section>
-      )}
-
-      {page === 'analytics' && (
-        <section className="mx-auto max-w-6xl px-6 py-10">
-          <h2 className="text-2xl font-semibold">Analytics</h2>
-          <p className="text-slate-600 mb-6">High-level performance metrics derived from your journaled trades.</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-5">
-              <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Wins / Losses</div>
-              <div className="text-3xl font-semibold">{analytics.wins} / {analytics.losses}</div>
-            </div>
-            <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-5">
-              <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Best Trade (R)</div>
-              <div className="text-3xl font-semibold">{(() => {
-                if (!trades.length) return '0.00';
-                const best = Math.max(...trades.map(t => t.rMultiple ?? 0));
-                return Number.isFinite(best) ? best.toFixed(2) : '0.00';
-              })()}</div>
-            </div>
-            <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-5">
-              <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Worst Trade (R)</div>
-              <div className="text-3xl font-semibold">{(() => {
-                if (!trades.length) return '0.00';
-                const worst = Math.min(...trades.map(t => t.rMultiple ?? 0));
-                return Number.isFinite(worst) ? worst.toFixed(2) : '0.00';
-              })()}</div>
-            </div>
-          </div>
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">Equity Curve</h3>
-            <MiniEquityChart data={analytics.equity} />
-          </div>
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">Performance By Pair</h3>
-            <PairBars trades={trades} />
-          </div>
-        </section>
-      )}
+          {page === 'analytics' && (
+            <section className="mx-auto max-w-6xl py-10">
+              <h2 className="text-2xl font-semibold">Analytics</h2>
+              <p className="text-slate-600 mb-6">High-level performance metrics derived from your journaled trades.</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-5">
+                  <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Wins / Losses</div>
+                  <div className="text-3xl font-semibold">{analytics.wins} / {analytics.losses}</div>
+                </div>
+                <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-5">
+                  <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Best Trade (R)</div>
+                  <div className="text-3xl font-semibold">{(() => {
+                    if (!trades.length) return '0.00';
+                    const best = Math.max(...trades.map(t => t.rMultiple ?? 0));
+                    return Number.isFinite(best) ? best.toFixed(2) : '0.00';
+                  })()}</div>
+                </div>
+                <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-5">
+                  <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Worst Trade (R)</div>
+                  <div className="text-3xl font-semibold">{(() => {
+                    if (!trades.length) return '0.00';
+                    const worst = Math.min(...trades.map(t => t.rMultiple ?? 0));
+                    return Number.isFinite(worst) ? worst.toFixed(2) : '0.00';
+                  })()}</div>
+                </div>
+              </div>
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-2">Equity Curve</h3>
+                <MiniEquityChart data={analytics.equity} />
+              </div>
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-2">Performance By Pair</h3>
+                <PairBars trades={trades} />
+              </div>
+            </section>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
