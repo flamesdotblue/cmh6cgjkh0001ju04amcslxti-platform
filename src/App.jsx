@@ -145,37 +145,37 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-b from-white to-white/40 text-slate-900">
       <div className="flex">
         <Sidebar activeKey={page} onChange={setPage} />
-        <main className="flex-1 min-h-screen ml-0 lg:ml-0 px-6 pb-12 lg:pl-72">
+        <main className="flex-1 min-h-screen px-4 sm:px-6 pb-20 lg:pb-12 lg:pl-72">
           {page === 'dashboard' && (
             <>
-              <div className="pt-6 lg:pt-8">
+              <div className="pt-16 sm:pt-6 lg:pt-8">
                 <HeroCover />
               </div>
-              <section className="mx-auto max-w-6xl -mt-24 relative z-10">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
-                    <div className="text-xs uppercase tracking-wide text-slate-500">Total Trades</div>
-                    <div className="text-3xl font-semibold mt-1">{analytics.total}</div>
+              <section className="mx-auto max-w-6xl -mt-20 sm:-mt-24 relative z-10 px-0 sm:px-0">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-3 sm:p-4 shadow-sm">
+                    <div className="text-[11px] sm:text-xs uppercase tracking-wide text-slate-500">Total Trades</div>
+                    <div className="text-2xl sm:text-3xl font-semibold mt-1">{analytics.total}</div>
                   </div>
-                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
-                    <div className="text-xs uppercase tracking-wide text-slate-500">Win Rate</div>
-                    <div className="text-3xl font-semibold mt-1">{analytics.winRate}%</div>
+                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-3 sm:p-4 shadow-sm">
+                    <div className="text-[11px] sm:text-xs uppercase tracking-wide text-slate-500">Win Rate</div>
+                    <div className="text-2xl sm:text-3xl font-semibold mt-1">{analytics.winRate}%</div>
                   </div>
-                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
-                    <div className="text-xs uppercase tracking-wide text-slate-500">Net PnL</div>
-                    <div className={`text-3xl font-semibold mt-1 ${analytics.totalPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>{formatCurrency(analytics.totalPnl)}</div>
+                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-3 sm:p-4 shadow-sm">
+                    <div className="text-[11px] sm:text-xs uppercase tracking-wide text-slate-500">Net PnL</div>
+                    <div className={`text-2xl sm:text-3xl font-semibold mt-1 ${analytics.totalPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>{formatCurrency(analytics.totalPnl)}</div>
                   </div>
-                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4 shadow-sm">
-                    <div className="text-xs uppercase tracking-wide text-slate-500">Avg R Multiple</div>
-                    <div className="text-3xl font-semibold mt-1">{analytics.avgR.toFixed(2)}</div>
+                  <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-3 sm:p-4 shadow-sm">
+                    <div className="text-[11px] sm:text-xs uppercase tracking-wide text-slate-500">Avg R Multiple</div>
+                    <div className="text-2xl sm:text-3xl font-semibold mt-1">{analytics.avgR.toFixed(2)}</div>
                   </div>
                 </div>
-                <div className="mt-6">
+                <div className="mt-4 sm:mt-6">
                   <MiniEquityChart data={analytics.equity} />
                 </div>
-                <div className="mt-8">
+                <div className="mt-6 sm:mt-8">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold">Recent Trades</h3>
+                    <h3 className="text-base sm:text-lg font-semibold">Recent Trades</h3>
                     <button onClick={() => setPage('history')} className="text-sm text-slate-600 hover:text-slate-900">View all</button>
                   </div>
                   <TradeTable trades={trades.slice(0, 5)} onDelete={removeTrade} compact />
@@ -185,17 +185,17 @@ export default function App() {
           )}
 
           {page === 'new' && (
-            <section className="mx-auto max-w-3xl py-10">
-              <h2 className="text-2xl font-semibold mb-4">Add New Trade</h2>
+            <section className="mx-auto max-w-3xl py-8 sm:py-10">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4">Add New Trade</h2>
               <TradeForm onSubmit={handleAddTrade} />
             </section>
           )}
 
           {page === 'history' && (
-            <section className="mx-auto max-w-6xl py-10">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold">Trade History</h2>
-                <button onClick={() => setPage('new')} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 text-white px-4 py-2 hover:bg-slate-800">
+            <section className="mx-auto max-w-6xl py-8 sm:py-10">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <h2 className="text-xl sm:text-2xl font-semibold">Trade History</h2>
+                <button onClick={() => setPage('new')} className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 text-white px-4 py-2 hover:bg-slate-800 w-full sm:w-auto">
                   <Plus size={16} /> New Trade
                 </button>
               </div>
@@ -204,36 +204,36 @@ export default function App() {
           )}
 
           {page === 'analytics' && (
-            <section className="mx-auto max-w-6xl py-10">
-              <h2 className="text-2xl font-semibold">Analytics</h2>
-              <p className="text-slate-600 mb-6">High-level performance metrics derived from your journaled trades.</p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-5">
+            <section className="mx-auto max-w-6xl py-8 sm:py-10">
+              <h2 className="text-xl sm:text-2xl font-semibold">Analytics</h2>
+              <p className="text-slate-600 mb-4 sm:mb-6 text-sm sm:text-base">High-level performance metrics derived from your journaled trades.</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+                <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4">
                   <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Wins / Losses</div>
-                  <div className="text-3xl font-semibold">{analytics.wins} / {analytics.losses}</div>
+                  <div className="text-2xl sm:text-3xl font-semibold">{analytics.wins} / {analytics.losses}</div>
                 </div>
-                <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-5">
+                <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4">
                   <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Best Trade (R)</div>
-                  <div className="text-3xl font-semibold">{(() => {
+                  <div className="text-2xl sm:text-3xl font-semibold">{(() => {
                     if (!trades.length) return '0.00';
                     const best = Math.max(...trades.map(t => t.rMultiple ?? 0));
                     return Number.isFinite(best) ? best.toFixed(2) : '0.00';
                   })()}</div>
                 </div>
-                <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-5">
+                <div className="rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-4">
                   <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">Worst Trade (R)</div>
-                  <div className="text-3xl font-semibold">{(() => {
+                  <div className="text-2xl sm:text-3xl font-semibold">{(() => {
                     if (!trades.length) return '0.00';
                     const worst = Math.min(...trades.map(t => t.rMultiple ?? 0));
                     return Number.isFinite(worst) ? worst.toFixed(2) : '0.00';
                   })()}</div>
                 </div>
               </div>
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
                 <h3 className="text-lg font-semibold mb-2">Equity Curve</h3>
                 <MiniEquityChart data={analytics.equity} />
               </div>
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
                 <h3 className="text-lg font-semibold mb-2">Performance By Pair</h3>
                 <PairBars trades={trades} />
               </div>
@@ -259,15 +259,15 @@ function PairBars({ trades }) {
   return (
     <div className="space-y-2">
       {items.map(([pair, val]) => (
-        <div key={pair} className="flex items-center gap-3">
-          <div className="w-20 text-sm text-slate-600">{pair}</div>
-          <div className="flex-1 h-6 bg-white/60 rounded overflow-hidden">
+        <div key={pair} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <div className="w-full sm:w-20 text-sm text-slate-600">{pair}</div>
+          <div className="flex-1 h-4 sm:h-6 bg-white/60 rounded overflow-hidden">
             <div
               className={`h-full ${val >= 0 ? 'bg-emerald-500' : 'bg-rose-500'}`}
               style={{ width: `${(Math.abs(val) / max) * 100}%` }}
             />
           </div>
-          <div className={`w-24 text-right text-sm ${val >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>{formatCurrency(val)}</div>
+          <div className={`w-full sm:w-24 text-right text-sm ${val >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>{formatCurrency(val)}</div>
         </div>
       ))}
     </div>

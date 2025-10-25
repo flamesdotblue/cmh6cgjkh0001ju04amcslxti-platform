@@ -63,7 +63,7 @@ export default function TradeForm({ onSubmit }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <label className="block text-sm font-medium text-slate-700">Entry</label>
           <input type="number" step="0.0001" value={form.entry} onChange={(e) => update('entry', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400 bg-white" />
@@ -87,8 +87,10 @@ export default function TradeForm({ onSubmit }) {
         <textarea rows={4} value={form.notes} onChange={(e) => update('notes', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400 bg-white" placeholder="Setup, confluence, emotions, management..." />
       </div>
 
-      <div className="flex items-center gap-3">
-        <button type="submit" className="inline-flex items-center justify-center rounded-lg bg-slate-900 text-white px-4 py-2 hover:bg-slate-800">Save Trade</button>
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <button type="submit" className="inline-flex items-center justify-center rounded-lg bg-slate-900 text-white px-4 py-2 hover:bg-slate-800">
+          Save Trade
+        </button>
         <p className="text-sm text-slate-600">Your trades are stored locally in your browser.</p>
       </div>
     </form>
